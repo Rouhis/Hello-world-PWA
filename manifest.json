@@ -1,0 +1,25 @@
+{
+    "name": "Hello PWA",
+    "short_name": "Hello PWA",
+    "start_url": ".",
+    "display": "standalone",
+    "background_color": "#f5f5f5",
+    "theme_color": "#009688",
+    "icons": [
+      {
+        "src": "img/icon-72x72.png",
+        "sizes": "72x72",
+        "type": "image/png"
+      },
+      {
+        "src": "img/icon-96x96.png",
+        "sizes": "96x96",
+        "type": "image/png"
+      }
+    ],
+    "font_display": "swap",
+    "fonts": [
+      "fonts/CourirerPrime.woff2"
+    ]
+  }
+  
