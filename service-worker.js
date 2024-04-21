@@ -1,47 +1,25 @@
-const staticCacheName = 'hello-pwa-v1';
+var cacheName = 'hello-pwa-v1';
+var filesToCache = [
+  '/',
+  '/index.html',
+  '/css/style.css',
+  '/js/main.js'
+];
 
-const cacheAssets = async (urls) => {
-  const cache = await caches.open(staticCacheName);
-  await cache.addAll(urls);
-};
-
-const getCachedResponse = async (req) => {
-  const cachedResponse = await caches.match(req);
-  if (cachedResponse) return cachedResponse;
-
-  return fetch(req);
-};
-
-addEventListener('install', async (event) => {
-  event.waitUntil(cacheAssets([
-    '.',
-    'index.html',
-    'css/styles.css',
-    'img/background.jpg',
-    'fonts/CourirerPrime.woff2',
-    'https://kit.fontawesome.com/your-fontawesome-kit-id.js'
-  ]));
-});
-
-addEventListener('activate', async (event) => {
-  const cacheWhitelist = [staticCacheName];
-  event.waitUntil(
-    caches.keys().then(async (cacheNames) => {
-      const promises = cacheNames.map(async (cacheName) => {
-        if (!cacheWhitelist.includes(cacheName)) {
-          await caches.delete(cacheName);
-        }
-      });
-      await Promise.all(promises);
+/* Start the service worker and cache all of the app's content */
+self.addEventListener('install', function(e) {
+  e.waitUntil(
+    caches.open(cacheName).then(function(cache) {
+      return cache.addAll(filesToCache);
     })
   );
 });
 
-addEventListener('fetch', async (event) => {
-  try {
-    const cachedResponse = await getCachedResponse(event.request);
-    event.respondWith(cachedResponse);
-  } catch (error) {
-    console.error('Error fetching resources:', error);
-  }
+/* Serve cached content when offline */
+self.addEventListener('fetch', function(e) {
+  e.respondWith(
+    caches.match(e.request).then(function(response) {
+      return response || fetch(e.request);
+    })
+  );
 });
